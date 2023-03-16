@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: helpers/index.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: helpers/index.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @function formatPrice
+ * @description Formatea un número en un string que representa una cantidad monetaria.
+ * @param {number} price - El precio a formatear.
+ * @returns {string} - El precio formateado en una cadena de texto.
+ */
+export const formatPrice = (price) => {
+  const x = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: "USD"
+  }).format(price)
+  return x
+}
+
+/**
+ * @function formatDate
+ * @description Convierte una cadena de fecha en un objeto Date y devuelve la fecha formateada.
+ * @param {string} dateString - La cadena de texto que representa una fecha.
+ * @returns {string} - La fecha formateada en una cadena de texto en el formato local "es-ES".
+ */
+export const formatDate = (dateString) => {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('es-ES', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    weekday: 'long'
+  })
+}
+
+/**
+ * @function getCookie
+ * @description Obtiene un valor de cookie por su clave.
+ * @param {string} key - La clave del valor de la cookie a obtener.
+ * @returns {object} - El valor de la cookie en forma de objeto JSON.
+ */
+export const getCookie = (key) => {
+  const cookie = document.cookie.split(";")
+    .find(c => c.trim().startsWith(`${key}=`))
+    .split("=")[1]
+  return JSON.parse(cookie)
+}
+
+/**
+ * @function setCookie
+ * @description Establece un valor de cookie para una clave dada.
+ * @param {string} key - La clave a la que se debe asociar el valor de la cookie.
+ * @param {object} value - El valor que se debe almacenar en la cookie.
+ * @returns {void}
+ */
+export const setCookie = (key, value) => {
+  document.cookie = `${key}=${JSON.stringify(value)};path=/;`
+}
+
+/**
+ * @function clearCookie
+ * @description Elimina una cookie existente para una clave dada.
+ * @param {string} key - La clave de la cookie que se debe eliminar.
+ * @returns {void}
+ */
+
+export function clearCookie(key) {
+  document.cookie = `${key}=;path=/;`
+}
+
+/**
+ * @function getLocalStorage
+ * @description Obtiene el valor almacenado en el almacenamiento local para una clave dada.
+ * @param {string} key - La clave para la cual se debe obtener el valor almacenado.
+ * @returns {object} - El valor almacenado en el almacenamiento local en forma de objeto JSON.
+ */
+export const getLocalStorage = (key) => {
+  const value = localStorage.getItem(key)
+  return JSON.parse(value)
+}
+
+
+/**
+ * @function setLocalStorage
+ * @description Establece un valor en el almacenamiento local para una clave dada.
+ * Si la clave ya tiene un valor asociado, se sobrescribirá con el nuevo valor proporcionado.
+ * @param {string} key - La clave a la que se debe asociar el valor.
+ * @param {object} value - El valor que se debe almacenar en el almacenamiento local.
+ * @returns {void}
+ */
+export const setLocalStorage = (key, value) => {
+  const data = localStorage.getItem(key)
+  if (!data) {
+    localStorage.setItem(key, JSON.stringify(value))
+  }
+  localStorage.setItem(key, JSON.stringify(value))
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-firebaseAuth.html">firebaseAuth</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addUser">addUser</a></li><li><a href="global.html#clearCookie">clearCookie</a></li><li><a href="global.html#createAppointment">createAppointment</a></li><li><a href="global.html#createService">createService</a></li><li><a href="global.html#deleteService">deleteService</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li><li><a href="global.html#formatDate">formatDate</a></li><li><a href="global.html#formatPrice">formatPrice</a></li><li><a href="global.html#getAllAppointments">getAllAppointments</a></li><li><a href="global.html#getAllServices">getAllServices</a></li><li><a href="global.html#getCookie">getCookie</a></li><li><a href="global.html#getLocalStorage">getLocalStorage</a></li><li><a href="global.html#getServiceById">getServiceById</a></li><li><a href="global.html#getUsers">getUsers</a></li><li><a href="global.html#modal">modal</a></li><li><a href="global.html#optionsNavigation">optionsNavigation</a></li><li><a href="global.html#renderAppointments">renderAppointments</a></li><li><a href="global.html#renderServices">renderServices</a></li><li><a href="global.html#renderUserData">renderUserData</a></li><li><a href="global.html#setCookie">setCookie</a></li><li><a href="global.html#setLocalStorage">setLocalStorage</a></li><li><a href="global.html#showFormMessage">showFormMessage</a></li><li><a href="global.html#showServiceAndPrice">showServiceAndPrice</a></li><li><a href="global.html#textWithSpan">textWithSpan</a></li><li><a href="global.html#toggleShowPassword">toggleShowPassword</a></li><li><a href="global.html#updateService">updateService</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Mar 15 2023 21:14:16 GMT-0500 (Ecuador Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

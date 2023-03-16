@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: db/appointments.service.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: db/appointments.service.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>
+
+import { addDoc, collection, doc, getDoc, getDocs, query } from "firebase/firestore"
+import { db } from "../firebase"
+import { dbConfig } from "./dbConfig"
+
+/**
+ * @async
+ * @function getAllAppointments
+ * @description Recupera todos los datos de los documentos de la colección de citas y devuelve una array con las citas formateadas y sus datos relacionados.
+ * @returns {Promise&lt;Array>} Una promesa que resuelve en una matriz de citas formateadas y sus datos relacionados. Si no se puede obtener las citas, se rechaza la promesa con un Error.
+ * @throws {Error} Si no se puede obtener las citas de Firestore.
+ */
+export const getAllAppointments = async () => {
+  const appointmentsCollection = collection(db, dbConfig.appointments)
+  const q = query(appointmentsCollection)
+  const qs = await getDocs(q)
+  const formattedAppointment = qs.docs.map(async (doc) => {
+    const appointment = doc.data()
+    const user = await getDoc(appointment.user)
+    const services = appointment.services.map(async (service) => {
+      const serviceDoc = await getDoc(service)
+      return serviceDoc.data()
+    })
+    appointment.id = doc.id
+
+    return {
+      ...appointment,
+      user: user.data(),
+      services: await Promise.all(services)
+    }
+  })
+  const appotinments = await Promise.all(formattedAppointment)
+  console.log(appotinments)
+  return appotinments
+}
+
+/**
+ * @async
+ * @function createAppointment
+ * @param {string} userId - El ID del usuario que crea la cita.
+ * @param {object} appointmentData - Un objeto que contiene los datos de la cita a crear.
+ * @param {string} appointmentData.date - La fecha de la cita.
+ * @param {string} appointmentData.time - La hora de la cita.
+ * @param {Array&lt;object>} appointmentData.services - Un array de objetos que contiene los datos del servicio para la cita.
+ * @param {string} appointmentData.services.id - El ID del servicio para la cita.
+ * @returns {Promise&lt;boolean|null>} Una promesa que resuelve en verdadero si se creó la cita correctamente, de lo contrario, resuelve en nulo. Si no se puede crear la cita, se rechaza la promesa con un Error.
+ * @throws {Error} Si no se puede crear la cita en Firestore.
+ */
+export const createAppointment = async (userId, appointmentData) => {
+  try {
+    const userReference = doc(db, dbConfig.users, userId)
+    const servicesCollectionReference = collection(db, dbConfig.services)
+    const appointment = {
+      date: appointmentData.date,
+      hour: appointmentData.time,
+      isCompleted: false,
+      services: appointmentData.services.map(service => doc(servicesCollectionReference, service.id)),
+      user: userReference
+    }
+    const appointmentCollection = collection(db, dbConfig.appointments)
+    await addDoc(appointmentCollection, appointment)
+    return true
+  } catch (error) {
+    return null
+  }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-firebaseAuth.html">firebaseAuth</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addUser">addUser</a></li><li><a href="global.html#clearCookie">clearCookie</a></li><li><a href="global.html#createAppointment">createAppointment</a></li><li><a href="global.html#createService">createService</a></li><li><a href="global.html#deleteService">deleteService</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li><li><a href="global.html#formatDate">formatDate</a></li><li><a href="global.html#formatPrice">formatPrice</a></li><li><a href="global.html#getAllAppointments">getAllAppointments</a></li><li><a href="global.html#getAllServices">getAllServices</a></li><li><a href="global.html#getCookie">getCookie</a></li><li><a href="global.html#getLocalStorage">getLocalStorage</a></li><li><a href="global.html#getServiceById">getServiceById</a></li><li><a href="global.html#getUsers">getUsers</a></li><li><a href="global.html#modal">modal</a></li><li><a href="global.html#optionsNavigation">optionsNavigation</a></li><li><a href="global.html#renderAppointments">renderAppointments</a></li><li><a href="global.html#renderServices">renderServices</a></li><li><a href="global.html#renderUserData">renderUserData</a></li><li><a href="global.html#setCookie">setCookie</a></li><li><a href="global.html#setLocalStorage">setLocalStorage</a></li><li><a href="global.html#showFormMessage">showFormMessage</a></li><li><a href="global.html#showServiceAndPrice">showServiceAndPrice</a></li><li><a href="global.html#textWithSpan">textWithSpan</a></li><li><a href="global.html#toggleShowPassword">toggleShowPassword</a></li><li><a href="global.html#updateService">updateService</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Mar 15 2023 21:14:16 GMT-0500 (Ecuador Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
